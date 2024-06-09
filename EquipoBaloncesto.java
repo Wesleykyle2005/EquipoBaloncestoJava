@@ -6,23 +6,16 @@ public class EquipoBaloncesto {
 
 	public static void main(String[] args) {
 		boolean usarDatosPredefinidos = false; // Cambiar a true para usar datos predefinidos
-		String[] jugadoresNombres;
-		double[] estaturas;
-		double[] edades;
-		double[] velocidadesMaximas;
-		double[] alcancesEnSalto;
-		double[] pesos;
-		double[] envergaduras;
+		Object[][] jugadores;
 
 		if (usarDatosPredefinidos) {
-			jugadoresNombres = new String[] { "Josué Mojica", "Hollman Vargas", "Fernando Mendoza", "Juan Matínez",
-					"Neffer Cano" };
-			estaturas = new double[] { 185, 192, 188, 196, 205 };
-			edades = new double[] { 21, 25, 28, 26, 31 };
-			velocidadesMaximas = new double[] { 31, 28, 30, 33, 15 };
-			alcancesEnSalto = new double[] { 102, 110, 100, 98, 40 };
-			pesos = new double[] { 86, 90, 85, 100, 120 };
-			envergaduras = new double[] { 192, 192, 195, 210, 211 };
+			jugadores = new Object[][] {
+					{ "Josué Mojica", 185.0, 21, 31.0, 102.0, 86.0, 192.0 },
+					{ "Hollman Vargas", 192.0, 25, 28.0, 110.0, 90.0, 192.0 },
+					{ "Fernando Mendoza", 188.0, 28, 30.0, 100.0, 85.0, 195.0 },
+					{ "Juan Matínez", 196.0, 26, 33.0, 98.0, 100.0, 210.0 },
+					{ "Neffer Cano", 205.0, 31, 15.0, 40.0, 120.0, 211.0 }
+			};
 		} else {
 			try (Scanner scanner = new Scanner(System.in)) {
 				int numJugadores = 0;
@@ -43,29 +36,23 @@ public class EquipoBaloncesto {
 					}
 				}
 
-				jugadoresNombres = new String[numJugadores];
-				estaturas = new double[numJugadores];
-				edades = new double[numJugadores];
-				velocidadesMaximas = new double[numJugadores];
-				alcancesEnSalto = new double[numJugadores];
-				pesos = new double[numJugadores];
-				envergaduras = new double[numJugadores];
+				jugadores = new Object[numJugadores][7];
 
 				for (int i = 0; i < numJugadores; i++) {
 					System.out.println(
 							"\n" + "\u001B[32m" + "Ingrese los datos para el jugador " + (i + 1) + ":" + "\u001B[0m");
 
 					System.out.println("\n" + "\u001B[32m" + "Nombre:" + "\u001B[0m");
-					jugadoresNombres[i] = scanner.nextLine();
+					jugadores[i][0] = scanner.nextLine();
 
-					estaturas[i] = solicitarEntero(scanner, "\n" + "\u001B[32m" + "Estatura (cm):" + "\u001B[0m");
-					edades[i] = solicitarEntero(scanner, "\n" + "\u001B[32m" + "Edad:" + "\u001B[0m");
-					velocidadesMaximas[i] = solicitarDouble(scanner,
+					jugadores[i][1] = solicitarDouble(scanner, "\n" + "\u001B[32m" + "Estatura (cm):" + "\u001B[0m");
+					jugadores[i][2] = solicitarDouble(scanner, "\n" + "\u001B[32m" + "Edad:" + "\u001B[0m");
+					jugadores[i][3] = solicitarDouble(scanner,
 							"\n" + "\u001B[32m" + "Velocidad máxima (km/h):" + "\u001B[0m");
-					alcancesEnSalto[i] = solicitarEntero(scanner,
+					jugadores[i][4] = solicitarDouble(scanner,
 							"\n" + "\u001B[32m" + "Alcance en salto (cm):" + "\u001B[0m");
-					pesos[i] = solicitarEntero(scanner, "\n" + "\u001B[32m" + "Peso (kg):" + "\u001B[0m");
-					envergaduras[i] = solicitarEntero(scanner, "\n" + "\u001B[32m" + "Envergadura (cm):" + "\u001B[0m");
+					jugadores[i][5] = solicitarDouble(scanner, "\n" + "\u001B[32m" + "Peso (kg):" + "\u001B[0m");
+					jugadores[i][6] = solicitarDouble(scanner, "\n" + "\u001B[32m" + "Envergadura (cm):" + "\u001B[0m");
 				}
 			} catch (Exception e) {
 				System.out.println("Error: " + e.getMessage());
@@ -73,32 +60,29 @@ public class EquipoBaloncesto {
 			}
 		}
 
-		ImprimirJugadoresPorVelocidades(Arrays.copyOf(jugadoresNombres, jugadoresNombres.length),
-				Arrays.copyOf(velocidadesMaximas, velocidadesMaximas.length));
+		imprimirJugadoresPorVelocidades(Arrays.copyOf(jugadores, jugadores.length));
 
 		System.out.println(
 				"\n" + "\u001B[32m" + "Promedio de estaturas de la línea titular: " + "\u001B[0m"
-						+ calcularPromedioEstaturas(estaturas) + " cm");
+						+ calcularPromedioEstaturas(jugadores) + " cm");
 
 		System.out.println("\n" + "\u001B[32m" + "El jugador más completo es: " + "\u001B[0m"
-				+ calcularJugadorMasCompleto(jugadoresNombres, estaturas, velocidadesMaximas,
-						alcancesEnSalto, pesos, envergaduras));
+				+ calcularJugadorMasCompleto(jugadores));
 		System.out.println("\n" + "\u001B[32m" + "El jugador más capacitado para clavar el balón es: " + "\u001B[0m"
-				+ calculadorJugarMasCapacitado(jugadoresNombres, estaturas, envergaduras, alcancesEnSalto));
+				+ calculadorJugadorMasCapacitado(jugadores));
 
-		ordenarJugadoresPorIMC(Arrays.copyOf(jugadoresNombres, jugadoresNombres.length),
-				Arrays.copyOf(pesos, pesos.length), Arrays.copyOf(estaturas, estaturas.length));
-
+		ordenarJugadoresPorIMC(Arrays.copyOf(jugadores, jugadores.length));
 	}
 
-	private static String calculadorJugarMasCapacitado(String[] nombre, double[] estatura, double[] envergadura,
-			double[] saltos) {
-		double[] alcances = new double[nombre.length];
-		String[] nombresOrdenados = Arrays.copyOf(nombre, nombre.length);
+	private static String calculadorJugadorMasCapacitado(Object[][] jugadores) {
+		double[] alcances = new double[jugadores.length];
+		String[] nombresOrdenados = new String[jugadores.length];
 
 		try {
-			for (int i = 0; i < nombre.length; i++) {
-				alcances[i] = estatura[i] + (envergadura[i] / 2) * 0.7 + (saltos[i]);
+			for (int i = 0; i < jugadores.length; i++) {
+				alcances[i] = (double) jugadores[i][1] + ((double) jugadores[i][6] / 2) * 0.7
+						+ (double) jugadores[i][4];
+				nombresOrdenados[i] = (String) jugadores[i][0];
 			}
 
 			insertionSort(alcances, nombresOrdenados);
@@ -111,21 +95,18 @@ public class EquipoBaloncesto {
 			System.err.println("Error inesperado: " + e.getMessage());
 			return "Error inesperado: " + e.getMessage();
 		}
-
 	}
 
-	private static String calcularJugadorMasCompleto(String[] nombres, double[] estaturas,
-			double[] velocidades, double[] saltos, double[] pesos, double[] envergaduras) {
-
-		double[] puntuaciones = new double[nombres.length];
-		String[] nombresOrdenados = Arrays.copyOf(nombres, nombres.length);
+	private static String calcularJugadorMasCompleto(Object[][] jugadores) {
+		double[] puntuaciones = new double[jugadores.length];
+		String[] nombresOrdenados = new String[jugadores.length];
 
 		try {
-
-			for (int i = 0; i < nombres.length; i++) {
-				puntuaciones[i] = (estaturas[i] * 0.25) + (velocidades[i] * 0.25) + (saltos[i] * 0.20)
-						+ (pesos[i] * 0.10)
-						+ (envergaduras[i] * 0.20);
+			for (int i = 0; i < jugadores.length; i++) {
+				puntuaciones[i] = ((double) jugadores[i][1] * 0.25) + ((double) jugadores[i][3] * 0.25)
+						+ ((double) jugadores[i][4] * 0.20)
+						+ ((double) jugadores[i][5] * 0.10) + ((double) jugadores[i][6] * 0.20);
+				nombresOrdenados[i] = (String) jugadores[i][0];
 			}
 
 			insertionSort(puntuaciones, nombresOrdenados);
@@ -138,10 +119,16 @@ public class EquipoBaloncesto {
 			System.err.println("Error inesperado: " + e.getMessage());
 			return "Error inesperado: " + e.getMessage();
 		}
-
 	}
 
-	private static void ImprimirJugadoresPorVelocidades(String[] nombres, double[] velocidades) {
+	private static void imprimirJugadoresPorVelocidades(Object[][] jugadores) {
+		double[] velocidades = new double[jugadores.length];
+		String[] nombres = new String[jugadores.length];
+
+		for (int i = 0; i < jugadores.length; i++) {
+			velocidades[i] = (double) jugadores[i][3];
+			nombres[i] = (String) jugadores[i][0];
+		}
 
 		insertionSort(velocidades, nombres);
 
@@ -168,42 +155,32 @@ public class EquipoBaloncesto {
 		}
 	}
 
-	private static double calcularPromedioEstaturas(double[] estaturas) {
-		return Arrays.stream(estaturas).average().orElse(0);
+	private static double calcularPromedioEstaturas(Object[][] jugadores) {
+		double sumaEstaturas = 0;
+		int numJugadores = jugadores.length;
+
+		for (int i = 0; i < numJugadores; i++) {
+			sumaEstaturas += (double) jugadores[i][1];
+		}
+
+		return numJugadores > 0 ? sumaEstaturas / numJugadores : 0;
 	}
 
-	private static void ordenarJugadoresPorIMC(String[] nombres, double[] pesos, double[] estaturas) {
-		double[] imc = new double[nombres.length];
-		for (int i = 0; i < nombres.length; i++) {
-			imc[i] = pesos[i] / Math.pow(estaturas[i] / 100, 2);
-			// La estatura debe estar en metros al calcular el IMC
+	private static void ordenarJugadoresPorIMC(Object[][] jugadores) {
+		double[] imc = new double[jugadores.length];
+		String[] nombres = new String[jugadores.length];
+
+		for (int i = 0; i < jugadores.length; i++) {
+			imc[i] = (double) jugadores[i][5] / Math.pow((double) jugadores[i][1] / 100, 2);
+			nombres[i] = (String) jugadores[i][0];
 		}
+
 		insertionSort(imc, nombres);
 
 		System.out.println("\n" + "\u001B[32m" + "Jugadores ordenados por índice de masa corporal: " + "\u001B[0m");
 		for (int i = 0; i < nombres.length; i++) {
 			System.out.println(nombres[i] + ": " + imc[i]);
 		}
-	}
-
-	private static int solicitarEntero(Scanner scanner, String mensaje) {
-		int valor = 0;
-		while (true) {
-			try {
-				System.out.println(mensaje);
-				valor = scanner.nextInt();
-				scanner.nextLine();
-				if (valor <= 0) {
-					System.out.println("Debe ser un número mayor a 0");
-					continue;
-				}
-				break;
-			} catch (InputMismatchException e) {
-				System.out.println("Entrada inválida. Por favor, ingrese un número entero.");
-				scanner.nextLine();
-			}
-		}
-		return valor;
 	}
 
 	private static double solicitarDouble(Scanner scanner, String mensaje) {
