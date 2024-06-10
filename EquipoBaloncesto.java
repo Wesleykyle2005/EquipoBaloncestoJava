@@ -84,7 +84,8 @@ public class EquipoBaloncesto {
 						+ (double) jugadores[i][4];
 				nombresOrdenados[i] = (String) jugadores[i][0];
 			}
-
+			// Hago esto para ordenarlos de menos a mayor y así retornar ocupar el último
+			// valor que es el mayor
 			insertionSort(alcances, nombresOrdenados);
 
 			return nombresOrdenados[nombresOrdenados.length - 1];
@@ -108,7 +109,8 @@ public class EquipoBaloncesto {
 						+ ((double) jugadores[i][5] * 0.10) + ((double) jugadores[i][6] * 0.20);
 				nombresOrdenados[i] = (String) jugadores[i][0];
 			}
-
+			// Hago esto para ordenarlos de menos a mayor y así retornar ocupar el último
+			// valor que es el mayor
 			insertionSort(puntuaciones, nombresOrdenados);
 
 			return nombresOrdenados[nombresOrdenados.length - 1];
